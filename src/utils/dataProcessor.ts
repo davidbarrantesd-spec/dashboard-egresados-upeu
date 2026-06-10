@@ -59,7 +59,7 @@ const parseDate = (s: string): Date | null => {
 // ── main parser ────────────────────────────────────────────────────────────
 
 export async function loadEgresados(): Promise<Egresado[]> {
-  const response = await fetch('/data/egresados.csv')
+  const response = await fetch(`${import.meta.env.BASE_URL}data/egresados.csv`)
   const text = await response.text()
 
   const { data } = Papa.parse<EgresadoRaw>(text, {

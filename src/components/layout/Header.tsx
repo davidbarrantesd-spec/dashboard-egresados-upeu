@@ -1,11 +1,27 @@
-import React from 'react'
-import { GraduationCap, BarChart3 } from 'lucide-react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { GraduationCap, BarChart3, Maximize2, Minimize2 } from 'lucide-react'
 
 interface Props {
   totalRecords: number
 }
 
 export default function Header({ totalRecords }: Props) {
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handler)
+    return () => document.removeEventListener('fullscreenchange', handler)
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }, [])
+
   return (
     <header className="bg-gradient-to-r from-upeu-950 via-upeu-900 to-upeu-800 text-white shadow-xl">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,12 +55,30 @@ export default function Header({ totalRecords }: Props) {
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl border border-white/20">
-            <BarChart3 className="w-5 h-5 text-blue-300" />
-            <div className="text-right">
-              <p className="text-xs text-blue-300">Fuente de datos</p>
-              <p className="text-sm font-semibold text-white">Quiz de Actualización 2025</p>
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl border border-white/20">
+              <BarChart3 className="w-5 h-5 text-blue-300" />
+              <div className="text-right">
+                <p className="text-xs text-blue-300">Fuente de datos</p>
+                <p className="text-sm font-semibold text-white">Quiz de Actualización 2025</p>
+              </div>
             </div>
+
+            {/* Fullscreen button */}
+            <button
+              onClick={toggleFullscreen}
+              title={isFullscreen ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa'}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/20 hover:border-white/40 px-3 py-2 rounded-xl transition-all duration-150 group"
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-5 h-5 text-blue-200 group-hover:text-white transition-colors" />
+              ) : (
+                <Maximize2 className="w-5 h-5 text-blue-200 group-hover:text-white transition-colors" />
+              )}
+              <span className="hidden sm:inline text-xs font-medium text-blue-200 group-hover:text-white transition-colors">
+                {isFullscreen ? 'Salir' : 'Pantalla completa'}
+              </span>
+            </button>
           </div>
         </div>
       </div>
